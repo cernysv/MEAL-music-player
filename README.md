@@ -12,6 +12,9 @@ Built with WPF, it runs only on Windows for now. I'm planning to expand to Linux
 * [TagLib](https://github.com/taglib/taglib)
 * [.NET libraries](https://learn.microsoft.com/en-us/dotnet/api/)
 
+### Releases
+[Releases tab](https://github.com/cernysv/MEAL-Music-Player/releases/)
+
 ### Known bugs
 * AutoNext() doesn't work, doesn't automaticaly switch to the next song at the current song end
 
