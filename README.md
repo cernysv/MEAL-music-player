@@ -1,7 +1,7 @@
 # MEAL music player
 <sup>_**M**ade **E**asy **A**nd **L**ight_</sup>
 > [!CAUTION]
-> Currently in beta (0.1)
+> Currently in beta (0.2)
 
 ### About
 This is a music player that is designed to be fast and easy to use.  
@@ -16,14 +16,12 @@ Built with WPF, it runs only on Windows for now. I'm planning to expand to Linux
 [Releases tab](https://github.com/cernysv/MEAL-Music-Player/releases/)
 
 ### Known bugs
-* AutoNext() doesn't work, doesn't automaticaly switch to the next song at the current song end
+None for now
 
 ### My current To-Do list
 * Add Shuffle
-* Add Loop current song
 * Add volume control
 * Add custom music folder location (currently Music in the user folder)
-* Fix AutoNext()
 * Improve the UI
 
 ### Compatibility
