@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Assets\cover.png" />
+    <None Remove="Assets\loop.png" />
     <None Remove="Assets\next.png" />
     <None Remove="Assets\pause.png" />
     <None Remove="Assets\play.png" />
@@ -24,6 +25,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\cover.png" />
+    <Resource Include="Assets\loop.png" />
     <Resource Include="Assets\next.png" />
     <Resource Include="Assets\pause.png" />
     <Resource Include="Assets\play.png" />

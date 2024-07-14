@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -21,7 +22,7 @@ namespace MEAL_Music_Player
         private DispatcherTimer _timer;
         private int _currentSongIndex = -1;
         private double _songDuration;
-        // public bool LoopOneSong; //WIP\\
+        private bool LoopCurrentSong; // Add this variable
 
         public double CurrentPosition // Part of timebar functionality
         {
@@ -43,6 +44,8 @@ namespace MEAL_Music_Player
         public MainWindow() // Initialize program
         {
             InitializeComponent();
+            LoopCurrentSongButton.Checked += LoopCurrentSongButton_Checked;
+            LoopCurrentSongButton.Unchecked += LoopCurrentSongButton_Unchecked;
             LoadSongs();
 
             _timer = new DispatcherTimer
@@ -53,14 +56,34 @@ namespace MEAL_Music_Player
             _timer.Start();
         }
 
-        private void AutoNext(object sender, RoutedEventArgs e) // Switch to next song after current song ends (DOESN'T WORK CURRENTLY)
+        private void SongEnd(object sender, EventArgs e)
         {
             if (_audioFile != null && _audioFile.CurrentTime.TotalSeconds >= _audioFile.TotalTime.TotalSeconds)
             {
-                // Going to attempt to fix this, everything I tried has failed so far
-                NextButton_Click(this, new RoutedEventArgs());
-                PreviousButton_Click(this, new RoutedEventArgs());
-                NextButton_Click(this, new RoutedEventArgs());
+                if (LoopCurrentSongButton.IsChecked == true)
+                {
+                    // Loop the current song
+                    NextButton_Click(this, new RoutedEventArgs());
+                    Task.Delay(100).Wait();
+                    PreviousButton_Click(this, new RoutedEventArgs());
+                }
+                else if (LoopCurrentSongButton.IsChecked == false)
+                {
+                    // Switch to the next song
+                    NextButton_Click(this, new RoutedEventArgs());
+                    Task.Delay(100).Wait();
+                    PreviousButton_Click(this, new RoutedEventArgs());
+                    Task.Delay(100).Wait();
+                    NextButton_Click(this, new RoutedEventArgs());
+                }
+                else
+                {
+                    NextButton_Click(this, new RoutedEventArgs());
+                    Task.Delay(100).Wait();
+                    PreviousButton_Click(this, new RoutedEventArgs());
+                    Task.Delay(100).Wait();
+                    NextButton_Click(this, new RoutedEventArgs());
+                }
             }
         }
 
@@ -99,12 +122,12 @@ namespace MEAL_Music_Player
             TotalDurationTextBlock.Text = $"{_audioFile.TotalTime:mm\\:ss}";
         }
 
-        private void OnTimedEvent(object? sender, EventArgs e) // Call AutoNext() every second
+        private void OnTimedEvent(object? sender, EventArgs e) // Call SongEnd() every second
         {
             if (_audioFile != null && _waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing)
             {
                 CurrentPosition = _audioFile.CurrentTime.TotalSeconds;
-                AutoNext(this, new RoutedEventArgs());
+                SongEnd(this, EventArgs.Empty);
             }
         }
 
@@ -156,6 +179,16 @@ namespace MEAL_Music_Player
             }
         }
 
+        private void LoopCurrentSongButton_Checked(object sender, RoutedEventArgs e)
+        {
+            LoopCurrentSong = true;
+        }
+
+        private void LoopCurrentSongButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            LoopCurrentSong = false;
+        }
+
         private void PositionSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) // Part of timebar functionality
         {
             if (_audioFile != null && Math.Abs(PositionSlider.Value - CurrentPosition) > 0.1)
@@ -163,17 +196,9 @@ namespace MEAL_Music_Player
                 CurrentPosition = PositionSlider.Value;
             }
         }
-
-        /*private void LoopOneSong()
-        { 
-            if (LoopOneSong && _audioFile != null && _waveOut != null)
-            {
-                //WIP\\
-            }
-        } */
     }
 
-    public class WidthConverter : IValueConverter // Timebar width converter (i know very good explanation)
+    public class WidthConverter : IValueConverter // Timebar width converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
